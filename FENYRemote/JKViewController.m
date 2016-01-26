@@ -79,7 +79,6 @@
     _lineHost.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"LineIP"];
     _standard.text = @"--";
     _speed.text = @"--";
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -1786,35 +1785,19 @@
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
     textField.text = @"";
-    if (textField.tag == 1){
-        CGRect frame = textField.frame;
-        int offset = frame.origin.y + 130 - (self.view.frame.size.height - 355.0);// -键盘高度
-        //**************键盘弹出的动画效果*****************
-        NSTimeInterval animationDuration = 0.30f;
-        [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
-        [UIView setAnimationDuration:animationDuration];
-        //**************键盘弹出的动画效果*****************
-        //将视图的Y坐标向上移动offset个单位，以使下面腾出地方用于软键盘的显示
-        if(offset > 0){
-            self.view.frame = CGRectMake(0.0f, -offset, self.view.frame.size.width, self.view.frame.size.height);
-        }
-        
-        [UIView commitAnimations];
+    CGRect frame = textField.frame;
+    int offset = frame.origin.y + 130 - (self.view.frame.size.height - 355.0);// -键盘高度
+    //**************键盘弹出的动画效果*****************
+    NSTimeInterval animationDuration = 0.30f;
+    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    //**************键盘弹出的动画效果*****************
+    //将视图的Y坐标向上移动offset个单位，以使下面腾出地方用于软键盘的显示
+    if(offset > 0){
+        self.view.frame = CGRectMake(0.0f, -offset, self.view.frame.size.width, self.view.frame.size.height);
     }
     
-    if (textField.tag == 2){
-        int offset = 895 + 120 - (self.view.frame.size.height - 355.0);// -键盘高度
-        //**************键盘弹出的动画效果*****************
-        NSTimeInterval animationDuration = 0.30f;
-        [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
-        [UIView setAnimationDuration:animationDuration];
-        //**************键盘弹出的动画效果*****************
-        //将视图的Y坐标向上移动offset个单位，以使下面腾出地方用于软键盘的显示
-        if(offset > 0){
-            self.view.frame = CGRectMake(0.0f, -offset, self.view.frame.size.width, self.view.frame.size.height);
-        }
-        [UIView commitAnimations];
-    }
+    [UIView commitAnimations];
 }
 
 //输入框编辑完成以后，将视图恢复到原始状态
