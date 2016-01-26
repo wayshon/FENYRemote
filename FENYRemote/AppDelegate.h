@@ -1,9 +1,9 @@
 //
 //  AppDelegate.h
-//  FENYRemote
+//  ipadDemo
 //
-//  Created by 王旭 on 16/1/19.
-//  Copyright © 2016年 无锡市瑞丰精密机电技术有限公司. All rights reserved.
+//  Created by 王旭 on 15/10/31.
+//  Copyright © 2015年 王旭. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -11,7 +11,6 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
 
 @end
 

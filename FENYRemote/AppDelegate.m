@@ -1,33 +1,56 @@
 //
 //  AppDelegate.m
-//  FENYRemote
+//  ipadDemo
 //
-//  Created by 王旭 on 16/1/19.
-//  Copyright © 2016年 无锡市瑞丰精密机电技术有限公司. All rights reserved.
+//  Created by 王旭 on 15/10/31.
+//  Copyright © 2015年 王旭. All rights reserved.
 //
 
 #import "AppDelegate.h"
+#import "ODXSocket.h"
+#import "SocketModel.h"
+#import "ODXGuideViewController.h"
+#import "TabBarController.h"
+
 
 @interface AppDelegate ()
-
+@property (atomic,strong) ODXSocket *socket;
+@property (atomic,strong) SocketModel *model;
 @end
 
 @implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+        ODXGuideViewController *GuideViewController = [[ODXGuideViewController alloc] init];
+        self.window.rootViewController = GuideViewController;
+    }
+    else{
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            TabBarController *tabBarVC = [mainStoryBoard instantiateViewControllerWithIdentifier:@"tabBarController"];
+            self.window.rootViewController = tabBarVC;
+        } else {
+            UIStoryboard *iPhoneStoryBoard = [UIStoryboard storyboardWithName:@"iPhone" bundle:nil];
+            TabBarController *tabBarVC = [iPhoneStoryBoard instantiateViewControllerWithIdentifier:@"phoneTabVC"];
+            self.window.rootViewController = tabBarVC;
+        }
+    }
+    [self.window makeKeyAndVisible];
+    _socket = [ODXSocket sharedSocket];
+    _model = [SocketModel sharedModel];
+    
     return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -39,7 +62,11 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+}
+
+- (void)dealloc {
+    
 }
 
 @end
