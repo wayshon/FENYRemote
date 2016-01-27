@@ -64,7 +64,7 @@
         [blockSelf performSegueWithIdentifier:@"REtoresult" sender:blockDetail];
     };
     
-    _model.updateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
+    _model.RemoteUpdateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
         _state = state;
         _hasCamera = camera;
         _hasBG = bg;
@@ -1733,10 +1733,11 @@
             {
                 uint8_t CMD = 0x3D;
                 TKeyValue action = kvAssignSpeed;
-                uint8_t content[2];
+                uint8_t content[3];
                 content[0] = action;
-                content[1] = [_KeyBoardText intValue];
-                [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+                content[1] = (unsigned char)(([_KeyBoardText intValue] * 10) >> 8);
+                content[2] = (unsigned char)(([_KeyBoardText intValue] * 10) & 0xffu);
+                [_socket sendRemoteThreadWithCMD:CMD Content:content len:3];
             }
                 break;
             case tsStop:
@@ -2178,18 +2179,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         _tips.text = @"未连接";
     });
-}
-
-- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
-//    _state = state;
-//    _hasCamera = camera;
-//    _hasBG = bg;
-//    _userName = jd;
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self updateView];
-//        _tips.text = tips;
-//    });
 }
 
 #pragma mark -CaptureViewDelegate

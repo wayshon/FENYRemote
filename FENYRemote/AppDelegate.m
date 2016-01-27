@@ -43,7 +43,10 @@
     _socket = [ODXSocket sharedSocket];
     _model = [SocketModel sharedModel];
     
-    _model.updateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
+    _model.RemoteUpdateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
+        
+    };
+    _model.updateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *hy,NSMutableString *jd,NSMutableString *car,NSMutableArray *sample,NSMutableArray *standArr,NSString *sd,NSString *sp){
         
     };
     _model.modelBlock = ^(NSDictionary *dic){

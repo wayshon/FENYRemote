@@ -127,7 +127,7 @@ static ODXSocket *singInstance = nil;
     [UDPSocket sendData:data toHost:host port:port withTimeout:60 tag:100];
     
     //__block ODXSocket *bself = self;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         [self sendBgAgain];
     });

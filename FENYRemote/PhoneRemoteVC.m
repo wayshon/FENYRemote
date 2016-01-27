@@ -1819,10 +1819,11 @@
             {
                 uint8_t CMD = 0x3D;
                 TKeyValue action = kvAssignSpeed;
-                uint8_t content[2];
+                uint8_t content[3];
                 content[0] = action;
-                content[1] = [_KeyBoardText intValue];
-                [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+                content[1] = (unsigned char)(([_KeyBoardText intValue] * 10) >> 8);
+                content[2] = (unsigned char)(([_KeyBoardText intValue] * 10) & 0xffu);
+                [_socket sendRemoteThreadWithCMD:CMD Content:content len:3];
             }
                 break;
             case tsStop:

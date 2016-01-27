@@ -16,6 +16,7 @@
 #import "CaptureView.h"
 #import "DetailViewController3.h"
 #import "DetailModel.h"
+#import "StateAndKey.h"
 
 
 @interface JKViewController ()<CustomIOSAlertViewDelegate,ContentViewDelegate,LNNumberpadDelegate,UITextFieldDelegate,modelDelegate,CaptureViewDelegate>
@@ -79,6 +80,51 @@
     _lineHost.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"LineIP"];
     _standard.text = @"--";
     _speed.text = @"--";
+    
+    _model.updateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *hy,NSMutableString *jd,NSMutableString *car,NSMutableArray *sample,NSMutableArray *standArr,NSString *sd,NSString *sp){
+        _state = state;
+        _hasCamera = camera;
+        _hasBG = bg;
+        _userName = jd;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [blockSelf updateView];
+            blockSelf.tips.text = tips;
+            blockSelf.hyLabel.text = hy;
+            blockSelf.jdLabel.text = jd;
+            if (_state == tsRunning) {
+                blockSelf.standard.text = sd;
+                blockSelf.speed.text = sp;
+            }else {
+                blockSelf.standard.text = @"--";
+                blockSelf.speed.text = @"--";
+            }
+            [blockSelf.CarNumber setTitle: car forState: UIControlStateNormal];
+            if (_state > tsEndTest || _state < tsRunning) {
+                blockSelf.sample1.text = @"--";
+                blockSelf.sample2.text = @"--";
+                blockSelf.sample3.text = @"--";
+                
+                blockSelf.standard1.text = @"--";
+                blockSelf.standard2.text = @"--";
+                blockSelf.standard3.text = @"--";
+            }else {
+                NSInteger m1 = [sample count];
+                blockSelf.sample1.text = sample[m1 - 3];
+                blockSelf.sample2.text = sample[m1 - 2];
+                blockSelf.sample3.text = sample[m1 - 1];
+                
+                NSInteger m2 = [standArr count];
+                blockSelf.standard1.text = standArr[m2 - 3];
+                blockSelf.standard2.text = standArr[m2 - 2];
+                blockSelf.standard3.text = standArr[m2 - 1];
+            }
+            
+            blockSelf.error1.text = [blockSelf calculateWithStandard:blockSelf.standard1.text Sample:blockSelf.sample1.text];
+            blockSelf.error2.text = [blockSelf calculateWithStandard:blockSelf.standard2.text Sample:blockSelf.sample2.text];
+            blockSelf.error3.text = [blockSelf calculateWithStandard:blockSelf.standard3.text Sample:blockSelf.sample3.text];
+        });
+    };
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -424,7 +470,6 @@
 }
 
 - (IBAction)addSpeed:(id)sender {
-#warning Incomplete implementation
     switch (_state) {
         case tsInit:
             [self tsInitAlertView];
@@ -523,7 +568,6 @@
     }
 }
 - (IBAction)downSpeed:(id)sender {
-#warning Incomplete implementation
     switch (_state) {
         case tsInit:
             [self tsInitAlertView];
@@ -570,6 +614,7 @@
             TKeyValue action = kvReduceSpeed;
             uint8_t content[1];
             content[0] = action;
+            NSLog(@"content : %x",content[0]);
             [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
         }
             break;
@@ -1864,10 +1909,11 @@
         {
             uint8_t CMD = 0x3D;
             TKeyValue action = kvAssignSpeed;
-            uint8_t content[2];
+            uint8_t content[3];
             content[0] = action;
-            content[1] = [_KeyBoardText intValue];
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+            content[1] = (unsigned char)(([_KeyBoardText intValue] * 10) >> 8);
+            content[2] = (unsigned char)(([_KeyBoardText intValue] * 10) & 0xffu);
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:3];
         }
             break;
         case tsStop:
@@ -1923,51 +1969,6 @@
 - (void)UnconnectionTips {
     dispatch_async(dispatch_get_main_queue(), ^{
         _tips.text = @"未连接";
-    });
-}
-
-- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
-    _state = state;
-    _hasCamera = camera;
-    _hasBG = bg;
-    _userName = jd;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateView];
-        _tips.text = tips;
-        _hyLabel.text = hy;
-        _jdLabel.text = jd;
-        if (_state == tsRunning) {
-            _standard.text = sd;
-            _speed.text = sp;
-        }else {
-            _standard.text = @"--";
-            _speed.text = @"--";
-        }
-        [_CarNumber setTitle: car forState: UIControlStateNormal];
-        if (_state > tsEndTest || _state < tsRunning) {
-            _sample1.text = @"--";
-            _sample2.text = @"--";
-            _sample3.text = @"--";
-            
-            _standard1.text = @"--";
-            _standard2.text = @"--";
-            _standard3.text = @"--";
-        }else {
-            NSInteger m1 = [sample count];
-            _sample1.text = sample[m1 - 3];
-            _sample2.text = sample[m1 - 2];
-            _sample3.text = sample[m1 - 1];
-            
-            NSInteger m2 = [standArr count];
-            _standard1.text = standArr[m2 - 3];
-            _standard2.text = standArr[m2 - 2];
-            _standard3.text = standArr[m2 - 1];
-        }
-        
-        _error1.text = [self calculateWithStandard:_standard1.text Sample:_sample1.text];
-        _error2.text = [self calculateWithStandard:_standard2.text Sample:_sample2.text];
-        _error3.text = [self calculateWithStandard:_standard3.text Sample:_sample3.text];
     });
 }
 

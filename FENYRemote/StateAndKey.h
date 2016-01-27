@@ -59,8 +59,8 @@ typedef enum {
     kvDown,     /*下*/
     kvLeft,     /*左*/
     kvRight,    /*右*/
-    kvAddSpeed,     /*10倍增加速度*/
-    kvReduceSpeed,  /*10倍减去速度*/
+    kvAddSpeed,     /*增加速度*/
+    kvReduceSpeed,  /*减去速度*/
     kvAssignSpeed,  /*发送指定速度*/
     kvReturen,  /*返回*/
     

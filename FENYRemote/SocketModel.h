@@ -11,20 +11,20 @@
 
 
 typedef void (^modelBlock)(NSDictionary *dic);
-typedef void (^updateBlock)(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd);
+typedef void (^RemoteUpdateBlock)(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd);
+typedef void (^updateBlock)(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *hy,NSMutableString *jd,NSMutableString *car,NSMutableArray *sample,NSMutableArray *standArr,NSString *sd,NSString *sp);
 
 @protocol modelDelegate <NSObject>
 
 @optional
 - (void)UnconnectionTips;
 
-- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp;
-
 @end
 
 @interface SocketModel : NSObject
 
 @property (nonatomic,copy) modelBlock modelBlock;
+@property (nonatomic,copy) RemoteUpdateBlock RemoteUpdateBlock;
 @property (nonatomic,copy) updateBlock updateBlock;
 @property id <modelDelegate> delegate;
 
