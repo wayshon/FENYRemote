@@ -54,7 +54,6 @@ typedef enum {
     kvGearDown,	/*起落置,降*/
     kvManualMode,	/*人工采样*/
     kvAutoMode,		/*自动采样*/
-    kvReturen,  /*返回*/
     /*******自己加的**********/
     kvUp,       /*上*/
     kvDown,     /*下*/
@@ -63,6 +62,8 @@ typedef enum {
     kvAddSpeed,     /*10倍增加速度*/
     kvReduceSpeed,  /*10倍减去速度*/
     kvAssignSpeed,  /*发送指定速度*/
+    kvReturen,  /*返回*/
+    
     kvManualCapture,  /*手动输入车牌*/
     kvQueryCar,     /*查询车辆信息*/
     kvUserEnter,     /*用户登入*/

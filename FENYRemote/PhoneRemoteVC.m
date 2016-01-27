@@ -345,19 +345,19 @@
             
             break;
         case tsRunning:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvReduceSpeed;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsStop:
             
             break;
         case tsPreStop:
-        {
-            uint8_t CMD = 0x3D;
-            TKeyValue action = kvDown;
-            uint8_t content[1];
-            content[0] = action;
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-        }
+        
             break;
         case tsEditSample:
         {
@@ -1129,7 +1129,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvSlipIn;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1257,7 +1263,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvSlipOut;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1385,7 +1397,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvGearUp;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1513,7 +1531,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvGearDown;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1936,7 +1960,7 @@
 }
 
 //零时用的
-- (void)testUpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
+- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
     _state = state;
     _hasCamera = camera;
     _hasBG = bg;

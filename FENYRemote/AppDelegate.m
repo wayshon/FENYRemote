@@ -43,6 +43,13 @@
     _socket = [ODXSocket sharedSocket];
     _model = [SocketModel sharedModel];
     
+    _model.updateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
+        
+    };
+    _model.modelBlock = ^(NSDictionary *dic){
+        
+    };
+    
     return YES;
 }
 

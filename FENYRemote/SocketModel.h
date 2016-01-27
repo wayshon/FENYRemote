@@ -11,21 +11,21 @@
 
 
 typedef void (^modelBlock)(NSDictionary *dic);
+typedef void (^updateBlock)(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd);
 
 @protocol modelDelegate <NSObject>
 
 @optional
 - (void)UnconnectionTips;
-- (void)updateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Stand:(NSString *)standard Speed:(NSString *)speed Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr;
 
-//零时用的
-- (void)testUpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp;
+- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp;
 
 @end
 
 @interface SocketModel : NSObject
 
-@property (nonatomic,copy) modelBlock block;
+@property (nonatomic,copy) modelBlock modelBlock;
+@property (nonatomic,copy) updateBlock updateBlock;
 @property id <modelDelegate> delegate;
 
 + (instancetype)sharedModel;

@@ -58,10 +58,22 @@
     _model.delegate = self;
     
     __block remotecontrolViewController *blockSelf = self;
-    _model.block = ^(NSDictionary *dic){
+    _model.modelBlock = ^(NSDictionary *dic){
         DetailModel *blockDetail = [[DetailModel alloc] init];
         [blockDetail setValuesForKeysWithDictionary:dic];
         [blockSelf performSegueWithIdentifier:@"REtoresult" sender:blockDetail];
+    };
+    
+    _model.updateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
+        _state = state;
+        _hasCamera = camera;
+        _hasBG = bg;
+        _userName = jd;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [blockSelf updateView];
+            blockSelf.tips.text = tips;
+        });
     };
 }
 
@@ -365,19 +377,19 @@
             
             break;
         case tsRunning:
-        
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvReduceSpeed;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsStop:
             
             break;
         case tsPreStop:
-        {
-            uint8_t CMD = 0x3D;
-            TKeyValue action = kvDown;
-            uint8_t content[1];
-            content[0] = action;
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-        }
+        
             break;
         case tsEditSample:
         {
@@ -624,114 +636,121 @@
     }
 }
 - (IBAction)ReturnBtnActions:(id)sender {
-    switch (_state) {
-        case tsInit:
-            [self tsInitAlertView];
-            break;
-        case tsWaitVerifyIn:
-            [self tsWaitVerifyInAlertView];
-            break;
-        case tsWaitLogIn:
-            [self alertView];
-            break;
-        case tsInputCarNo:
-        {
-            uint8_t CMD = 0x3D;
-            TKeyValue action = kvReturen;
-            uint8_t content[1];
-            content[0] = action;
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-        }
-            break;
-        case tsPreMotorDevice:
-            
-            break;
-        case tsAskLogin:
-            
-            break;
-        case tsAskCarNumplate:
-            
-            break;
-        case tsAskStartMotor:
-            
-            break;
-        case tsWaitSaveSample:
-            
-            break;
-        case tsInlineEditPar:
-            
-            break;
-        case tsAskParList:
-            
-            break;
-        case tsSaveParList:
-            
-            break;
-        case tsWaitRunCmd:
-        {
-            uint8_t CMD = 0x3D;
-            TKeyValue action = kvReturen;
-            uint8_t content[1];
-            content[0] = action;
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-        }
-            break;
-        case tsRunning:
-            
-            break;
-        case tsStop:
-        {
-            uint8_t CMD = 0x3D;
-            TKeyValue action = kvReturen;
-            uint8_t content[1];
-            content[0] = action;
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-        }
-            break;
-        case tsPreStop:
-            
-            break;
-        case tsEditSample:
-            
-            break;
-        case tsSendSample:
-            
-            break;
-        case tsSaveSample:
-            
-            break;
-        case tsAfterEditK:
-            
-            break;
-        case tsAskEndChk:
-            
-            break;
-        case tsSelectChkMode:
-            
-            break;
-        case tsEndTest:
-            
-            break;
-        case tsSetPar:
-            
-            break;
-        case tSelfTest:
-            
-            break;
-        case tsSysPar:
-            
-            break;
-        case tsDirectDisp:
-            
-            break;
-        case tsInputOffNo:
-            
-            break;
-            
-        default:
-            
-            break;
+    {
+        uint8_t CMD = 0x3D;
+        TKeyValue action = kvReturen;
+        uint8_t content[1];
+        content[0] = action;
+        [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
     }
+//    switch (_state) {
+//        case tsInit:
+//            [self tsInitAlertView];
+//            break;
+//        case tsWaitVerifyIn:
+//            [self tsWaitVerifyInAlertView];
+//            break;
+//        case tsWaitLogIn:
+//            [self alertView];
+//            break;
+//        case tsInputCarNo:
+//        {
+//            uint8_t CMD = 0x3D;
+//            TKeyValue action = kvReturen;
+//            uint8_t content[1];
+//            content[0] = action;
+//            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+//        }
+//            break;
+//        case tsPreMotorDevice:
+//            
+//            break;
+//        case tsAskLogin:
+//            
+//            break;
+//        case tsAskCarNumplate:
+//            
+//            break;
+//        case tsAskStartMotor:
+//            
+//            break;
+//        case tsWaitSaveSample:
+//            
+//            break;
+//        case tsInlineEditPar:
+//            
+//            break;
+//        case tsAskParList:
+//            
+//            break;
+//        case tsSaveParList:
+//            
+//            break;
+//        case tsWaitRunCmd:
+//        {
+//            uint8_t CMD = 0x3D;
+//            TKeyValue action = kvReturen;
+//            uint8_t content[1];
+//            content[0] = action;
+//            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+//        }
+//            break;
+//        case tsRunning:
+//            
+//            break;
+//        case tsStop:
+//        {
+//            uint8_t CMD = 0x3D;
+//            TKeyValue action = kvReturen;
+//            uint8_t content[1];
+//            content[0] = action;
+//            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+//        }
+//            break;
+//        case tsPreStop:
+//            
+//            break;
+//        case tsEditSample:
+//            
+//            break;
+//        case tsSendSample:
+//            
+//            break;
+//        case tsSaveSample:
+//            
+//            break;
+//        case tsAfterEditK:
+//            
+//            break;
+//        case tsAskEndChk:
+//            
+//            break;
+//        case tsSelectChkMode:
+//            
+//            break;
+//        case tsEndTest:
+//            
+//            break;
+//        case tsSetPar:
+//            
+//            break;
+//        case tSelfTest:
+//            
+//            break;
+//        case tsSysPar:
+//            
+//            break;
+//        case tsDirectDisp:
+//            
+//            break;
+//        case tsInputOffNo:
+//            
+//            break;
+//            
+//        default:
+//            
+//            break;
+//    }
 }
 - (IBAction)ZeroBtnActions:(id)sender {
     switch (_state) {
@@ -1149,7 +1168,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvSlipIn;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1277,7 +1302,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvSlipOut;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1405,7 +1436,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvGearUp;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -1533,7 +1570,13 @@
         }
             break;
         case tsInputCarNo:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvGearDown;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsPreMotorDevice:
             
@@ -2137,25 +2180,16 @@
     });
 }
 
-//- (void)updateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Stand:(NSString *)standard Speed:(NSString *)speed Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr errorArray:(NSMutableArray *)errorArr User:(NSString *)user {
+- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
 //    _state = state;
-//    _tip = tips;
 //    _hasCamera = camera;
-//    _userName = user;
-//    [self updateView];
-//}
-
-//零时用的
-- (void)testUpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
-    _state = state;
-    _hasCamera = camera;
-    _hasBG = bg;
-    _userName = jd;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateView];
-        _tips.text = tips;
-    });
+//    _hasBG = bg;
+//    _userName = jd;
+//    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self updateView];
+//        _tips.text = tips;
+//    });
 }
 
 #pragma mark -CaptureViewDelegate

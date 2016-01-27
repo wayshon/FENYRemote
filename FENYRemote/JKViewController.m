@@ -71,7 +71,7 @@
     _SpeedText.delegate = self;
     
     __block JKViewController *blockSelf = self;
-    _model.block = ^(NSDictionary *dic){
+    _model.modelBlock = ^(NSDictionary *dic){
         DetailModel *blockDetail = [[DetailModel alloc] init];
         [blockDetail setValuesForKeysWithDictionary:dic];
         [blockSelf performSegueWithIdentifier:@"JKtoresult" sender:blockDetail];
@@ -1867,8 +1867,6 @@
             uint8_t content[2];
             content[0] = action;
             content[1] = [_KeyBoardText intValue];
-            NSLog(@"key :%@",_KeyBoardText);
-            NSLog(@"**** : %x",content[1]);
             [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
         }
             break;
@@ -1928,34 +1926,7 @@
     });
 }
 
-- (void)updateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Stand:(NSString *)standard Speed:(NSString *)speed Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr errorArray:(NSMutableArray *)errorArr User:(NSString *)user {
-    _state = state;
-    _hasCamera = camera;
-    _userName = user;
-    [self updateView];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        _tips.text = tips;
-        _standard.text = standard;
-        _speed.text = speed;
-        [_CarNumber setTitle: car forState: UIControlStateNormal];
-        NSInteger m1 = [sample count];
-        _sample1.text = sample[m1 - 3];
-        _sample2.text = sample[m1 - 2];
-        _sample3.text = sample[m1 - 1];
-        
-        NSInteger m2 = [standArr count];
-        _standard1.text = standArr[m2 - 3];
-        _standard2.text = standArr[m2 - 2];
-        _standard3.text = standArr[m2 - 1];
-        
-        NSInteger m3 = [errorArr count];
-        _error1.text = errorArr[m3 - 3];
-        _error2.text = errorArr[m3 - 2];
-        _error3.text = errorArr[m3 - 1];
-    });
-}
-
-- (void)testUpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
+- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
     _state = state;
     _hasCamera = camera;
     _hasBG = bg;

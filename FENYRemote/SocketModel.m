@@ -333,7 +333,9 @@ static SocketModel *singInstance = nil;
         NSLog(@"standardsArr : %@",s);
     }
     
-    [_delegate testUpdateWithState:state Tips:tip Camera:hasCamera Bg:hasBg HY:heyanyuan JD:jiandingyuan Car:carNumberStr Sample:sampleArr standArray:standardsArr Standard:standardString Speed:speedStr];
+    _updateBlock(state,tip,hasCamera,hasBg,jiandingyuan);
+    
+    [_delegate UpdateWithState:state Tips:tip Camera:hasCamera Bg:hasBg HY:heyanyuan JD:jiandingyuan Car:carNumberStr Sample:sampleArr standArray:standardsArr Standard:standardString Speed:speedStr];
 }
 
 //- (void)test {
