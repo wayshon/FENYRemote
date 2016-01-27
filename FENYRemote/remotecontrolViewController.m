@@ -75,6 +75,8 @@
             blockSelf.tips.text = tips;
         });
     };
+    
+    _state = tsRunning;//删了
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -277,6 +279,7 @@
             TKeyValue action = kvAddSpeed;
             uint8_t content[1];
             content[0] = action;
+            NSLog(@"content : %x",content[0]);
             [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
         }
             break;
@@ -1688,7 +1691,6 @@
 
 - (void)sendAssignSpeed {
     if (![_KeyBoardText isEqualToString:@""]){
-#warning Incomplete implementation
         switch (_state) {
             case tsInit:
                 [self tsInitAlertView];

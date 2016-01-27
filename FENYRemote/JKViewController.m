@@ -614,7 +614,6 @@
             TKeyValue action = kvReduceSpeed;
             uint8_t content[1];
             content[0] = action;
-            NSLog(@"content : %x",content[0]);
             [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
         }
             break;
@@ -1863,8 +1862,6 @@
 }
 
 - (void)sendAssignSpeed {
-    //发送指定速度
-#warning Incomplete implementation
     switch (_state) {
         case tsInit:
             [self tsInitAlertView];

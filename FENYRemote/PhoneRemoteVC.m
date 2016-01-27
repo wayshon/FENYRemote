@@ -51,6 +51,19 @@
     _socket = [ODXSocket sharedSocket];
     _model = [SocketModel sharedModel];
     _model.delegate = self;
+    
+    __block PhoneRemoteVC *blockSelf = self;
+    _model.RemoteUpdateBlock = ^(TTestState state,NSString *tips,BOOL camera,BOOL bg,NSMutableString *jd){
+        _state = state;
+        _hasCamera = camera;
+        _hasBG = bg;
+        _userName = jd;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [blockSelf updateView];
+            blockSelf.tips.text = tips;
+        });
+    };
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -1774,7 +1787,6 @@
 
 - (void)sendAssignSpeed {
     if (![_KeyBoardText isEqualToString:@""]){
-#warning Incomplete implementation
         switch (_state) {
             case tsInit:
                 [self tsInitAlertView];
@@ -1949,27 +1961,6 @@
 - (void)UnconnectionTips {
     dispatch_async(dispatch_get_main_queue(), ^{
         _tips.text = @"未连接";
-    });
-}
-
-- (void)updateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Stand:(NSString *)standard Speed:(NSString *)speed Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr errorArray:(NSMutableArray *)errorArr User:(NSString *)user {
-    _state = state;
-    _tip = tips;
-    _hasCamera = camera;
-    _userName = user;
-    [self updateView];
-}
-
-//零时用的
-- (void)UpdateWithState:(TTestState)state Tips:(NSString *)tips Camera:(BOOL)camera Bg:(BOOL)bg HY:(NSMutableString *)hy JD:(NSMutableString *)jd Car:(NSMutableString *)car Sample:(NSMutableArray *)sample standArray:(NSMutableArray *)standArr Standard:(NSString *)sd Speed:(NSString *)sp{
-    _state = state;
-    _hasCamera = camera;
-    _hasBG = bg;
-    _userName = jd;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateView];
-        _tips.text = tips;
     });
 }
 

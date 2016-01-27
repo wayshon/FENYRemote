@@ -79,17 +79,17 @@ static ODXSocket *singInstance = nil;
 }
 
 - (void)sendRemoteThreadWithCMD:(uint8_t)cmd Content:(unsigned char * const)content len:(unsigned short)len  {
-    NSData *data = [[NSData alloc] initWithBytes:content length:len];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        Byte *cont = (Byte *)[data bytes];
-        unsigned short len = data.length;
-        [self sendUDPWithCMD:cmd Content:cont len:len isBG:NO];
-    });
+    [self sendUDPWithCMD:cmd Content:content len:len isBG:NO];
+//    NSData *data = [[NSData alloc] initWithBytes:content length:len];
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        Byte *cont = (Byte *)[data bytes];
+//        unsigned short len = data.length;
+//        [self sendUDPWithCMD:cmd Content:cont len:len isBG:NO];
+//    });
 }
 
 - (void)sendUDPWithCMD:(uint8_t)cmd Content:(unsigned char * const)content len:(unsigned short)len isBG:(BOOL)bg{
     dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
-    
     _received = NO;
     _ranNo = rand() % 100;
     _count = 0;
@@ -127,7 +127,7 @@ static ODXSocket *singInstance = nil;
     [UDPSocket sendData:data toHost:host port:port withTimeout:60 tag:100];
     
     //__block ODXSocket *bself = self;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC));
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         [self sendBgAgain];
     });
