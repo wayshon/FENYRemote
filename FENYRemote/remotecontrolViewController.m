@@ -20,8 +20,8 @@
 
 @interface remotecontrolViewController ()<CustomIOSAlertViewDelegate,YcKeyBoardViewDelegate,ContentViewDelegate,LNNumberpadDelegate,modelDelegate,CaptureViewDelegate>
 
-@property (nonatomic) NSString *userName;
-@property (nonatomic) NSString *passWord;
+@property (nonatomic) NSMutableString *userName;
+@property (nonatomic) NSMutableString *passWord;
 @property (nonatomic,strong) UISwipeGestureRecognizer *upGestureRecognizer;
 @property (nonatomic,strong) YcKeyBoardView *key;
 @property (nonatomic) UIButton *JDUserBtn;
@@ -75,8 +75,6 @@
             blockSelf.tips.text = tips;
         });
     };
-    
-    _state = tsRunning;//删了
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -130,7 +128,13 @@
             
             break;
         case tsWaitSaveSample:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvEnter;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsInlineEditPar:
             
@@ -193,7 +197,13 @@
         
             break;
         case tsSelectChkMode:
-        
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvEnter;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsEndTest:
         {
@@ -638,122 +648,116 @@
             break;
     }
 }
+
 - (IBAction)ReturnBtnActions:(id)sender {
-    {
-        uint8_t CMD = 0x3D;
-        TKeyValue action = kvReturen;
-        uint8_t content[1];
-        content[0] = action;
-        [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+    switch (_state) {
+        case tsInit:
+            [self tsInitAlertView];
+            break;
+        case tsWaitVerifyIn:
+            [self tsWaitVerifyInAlertView];
+            break;
+        case tsWaitLogIn:
+            [self alertView];
+            break;
+        case tsInputCarNo:
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvReturen;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
+            break;
+        case tsPreMotorDevice:
+            
+            break;
+        case tsAskLogin:
+            
+            break;
+        case tsAskCarNumplate:
+            
+            break;
+        case tsAskStartMotor:
+            
+            break;
+        case tsWaitSaveSample:
+            
+            break;
+        case tsInlineEditPar:
+            
+            break;
+        case tsAskParList:
+            
+            break;
+        case tsSaveParList:
+            
+            break;
+        case tsWaitRunCmd:
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvReturen;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
+            break;
+        case tsRunning:
+            
+            break;
+        case tsStop:
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvReturen;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
+            break;
+        case tsPreStop:
+            
+            break;
+        case tsEditSample:
+            
+            break;
+        case tsSendSample:
+            
+            break;
+        case tsSaveSample:
+            
+            break;
+        case tsAfterEditK:
+            
+            break;
+        case tsAskEndChk:
+            
+            break;
+        case tsSelectChkMode:
+            
+            break;
+        case tsEndTest:
+            
+            break;
+        case tsSetPar:
+            
+            break;
+        case tSelfTest:
+            
+            break;
+        case tsSysPar:
+            
+            break;
+        case tsDirectDisp:
+            
+            break;
+        case tsInputOffNo:
+            
+            break;
+            
+        default:
+            
+            break;
     }
-//    switch (_state) {
-//        case tsInit:
-//            [self tsInitAlertView];
-//            break;
-//        case tsWaitVerifyIn:
-//            [self tsWaitVerifyInAlertView];
-//            break;
-//        case tsWaitLogIn:
-//            [self alertView];
-//            break;
-//        case tsInputCarNo:
-//        {
-//            uint8_t CMD = 0x3D;
-//            TKeyValue action = kvReturen;
-//            uint8_t content[1];
-//            content[0] = action;
-//            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-//        }
-//            break;
-//        case tsPreMotorDevice:
-//            
-//            break;
-//        case tsAskLogin:
-//            
-//            break;
-//        case tsAskCarNumplate:
-//            
-//            break;
-//        case tsAskStartMotor:
-//            
-//            break;
-//        case tsWaitSaveSample:
-//            
-//            break;
-//        case tsInlineEditPar:
-//            
-//            break;
-//        case tsAskParList:
-//            
-//            break;
-//        case tsSaveParList:
-//            
-//            break;
-//        case tsWaitRunCmd:
-//        {
-//            uint8_t CMD = 0x3D;
-//            TKeyValue action = kvReturen;
-//            uint8_t content[1];
-//            content[0] = action;
-//            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-//        }
-//            break;
-//        case tsRunning:
-//            
-//            break;
-//        case tsStop:
-//        {
-//            uint8_t CMD = 0x3D;
-//            TKeyValue action = kvReturen;
-//            uint8_t content[1];
-//            content[0] = action;
-//            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
-//        }
-//            break;
-//        case tsPreStop:
-//            
-//            break;
-//        case tsEditSample:
-//            
-//            break;
-//        case tsSendSample:
-//            
-//            break;
-//        case tsSaveSample:
-//            
-//            break;
-//        case tsAfterEditK:
-//            
-//            break;
-//        case tsAskEndChk:
-//            
-//            break;
-//        case tsSelectChkMode:
-//            
-//            break;
-//        case tsEndTest:
-//            
-//            break;
-//        case tsSetPar:
-//            
-//            break;
-//        case tSelfTest:
-//            
-//            break;
-//        case tsSysPar:
-//            
-//            break;
-//        case tsDirectDisp:
-//            
-//            break;
-//        case tsInputOffNo:
-//            
-//            break;
-//            
-//        default:
-//            
-//            break;
-//    }
 }
 - (IBAction)ZeroBtnActions:(id)sender {
     switch (_state) {
@@ -1808,7 +1812,7 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)alertView{
+- (void)alertView {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"请检定员登入" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"稍后" style:UIAlertActionStyleCancel handler:nil];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"登入" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
@@ -1821,7 +1825,7 @@
 
 - (void)alertViewJD {
     CustomIOSAlertView *alert = [[CustomIOSAlertView alloc] init];
-    ConttentView *contentView = [[ConttentView alloc] initWithImg:@"carNumberBG"];
+    ConttentView *contentView = [[ConttentView alloc] initWithImg:@"JDenterBG"];
     [contentView.userName becomeFirstResponder];
     [alert setContainerView:contentView];
     contentView.delegate = self;
@@ -1835,11 +1839,18 @@
         }else if(buttonIndex == 1){
 #warning Incomplete implementation
             //这里发送登入指令
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvUserEnter;
+            NSMutableString *sendStr = _userName;
+            [sendStr appendString:_passWord];
+            uint8_t content[13];
+            content[0] = action;
+            for (int i = 1; i < 13; i++) {
+                content[i] = [sendStr characterAtIndex:i-1];
+            }
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
             [alertView close];
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                [self EnterErrorAlertView];
-            });
+            [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(EnterErrorAlertView) userInfo:nil repeats:NO];
         }
     }];
     
@@ -1849,7 +1860,7 @@
 }
 
 - (void)EnterErrorAlertView {
-    if (_state == tsWaitLogIn || _state == tsInit || _state == tsWaitVerifyIn) {
+    if (_state <= tsWaitLogIn) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"登入不成功" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
         [alertController addAction:cancelAction];
@@ -1860,7 +1871,7 @@
 
 - (void)alertViewCaptureWithCamera:(BOOL)camera {
     CustomIOSAlertView *alert = [[CustomIOSAlertView alloc] init];
-    CaptureView *captureView = [[CaptureView alloc] initWithImg:@"JDenterBG" Pad:YES];
+    CaptureView *captureView = [[CaptureView alloc] initWithImg:@"carNumberBG" Pad:YES];
     captureView.deledate = self;
     [alert setContainerView:captureView];
     [alert setDelegate:self];
@@ -1887,13 +1898,14 @@
                 uint8_t content[7];
                 content[0] = action;
                 for (int i = 1; i < 7; i++) {
-                    content[i] = [_inputCarNo characterAtIndex:i];
+                    content[i] = [_inputCarNo characterAtIndex:i-1];
                 }
                 [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
                 [alertView close];
             }
         }];
     }else {
+        [alert setButtonTitles:[NSMutableArray arrayWithObjects:@"返回", @"确定", nil]];
         [alert setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
             [captureView.carNumber resignFirstResponder];
             
@@ -1902,12 +1914,15 @@
             }else {
 #warning Incomplete implementation
                 //这里发送车牌号
-                uint8_t CMD = 0x33;
-                uint8_t content[6];
-                for (int i = 0; i < 6; i++) {
-                    content[i] = [_inputCarNo characterAtIndex:i];
+                uint8_t CMD = 0x3D;
+                TKeyValue action = kvManualCapture;
+                uint8_t content[7];
+                content[0] = action;
+                for (int i = 1; i < 7; i++) {
+                    content[i] = [_inputCarNo characterAtIndex:i-1];
                 }
-                [_socket sendRemoteThreadWithCMD:CMD Content:content len:6];
+                [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+                [alertView close];
             }
         }];
     }
@@ -1918,7 +1933,7 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    if([[segue identifier]isEqualToString:@"REtoresult"]){
+    if([[segue identifier]isEqualToString:@"JKtoresult"]){
         DetailViewController3 *viewController = segue.destinationViewController;
         //*****************熟记*****************
         viewController.detail = sender;
@@ -1931,11 +1946,71 @@
 
 #pragma ContentViewDelegate
 - (void)GetUserNameWithStr:(NSString *)userName {
-    _userName = userName;
+    if (userName.length > 0) {
+        self.userName = [userName copy];
+        switch (_userName.length) {
+            case 1:
+                for (int i = 0; i < 5; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 4; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 5:
+                [self.userName appendString:@"0"];
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
 
 - (void)GetPassWordWithStr:(NSString *)passWord {
-    _passWord = passWord;
+    if (passWord.length > 0) {
+        self.passWord = [passWord copy];
+        switch (_passWord.length) {
+            case 1:
+                for (int i = 0; i < 5; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 4; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 5:
+                [self.passWord appendString:@"0"];
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
 
 #pragma mark -CreatBtns
@@ -2051,9 +2126,12 @@
         //要不要加个定时器，显示推出不成功
         uint8_t CMD = 0x3D;
         TKeyValue myaction = kvUserExit;
-        uint8_t content[1];
+        uint8_t content[7];
         content[0] = myaction;
-        [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        for (int i = 1; i < 7; i++) {
+            content[i] = [_userName characterAtIndex:i-1];
+        }
+        [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
     }];
     [alertController addAction:cancelAction];
     [alertController addAction:okAction];

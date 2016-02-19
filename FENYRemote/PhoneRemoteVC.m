@@ -109,7 +109,13 @@
             
             break;
         case tsWaitSaveSample:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvEnter;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsInlineEditPar:
             
@@ -172,7 +178,13 @@
             
             break;
         case tsSelectChkMode:
-            
+        {
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvEnter;
+            uint8_t content[1];
+            content[0] = action;
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:1];
+        }
             break;
         case tsEndTest:
         {
@@ -1750,13 +1762,14 @@
                 uint8_t content[7];
                 content[0] = action;
                 for (int i = 1; i < 7; i++) {
-                    content[i] = [_inputCarNo characterAtIndex:i];
+                    content[i] = [_inputCarNo characterAtIndex:i-1];
                 }
                 [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
                 [alertView close];
             }
         }];
     }else {
+        [alert setButtonTitles:[NSMutableArray arrayWithObjects:@"返回", @"确定", nil]];
         [alert setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
             [captureView.carNumber resignFirstResponder];
             
@@ -1765,12 +1778,15 @@
             }else {
 #warning Incomplete implementation
                 //这里发送车牌号
-                uint8_t CMD = 0x33;
-                uint8_t content[6];
-                for (int i = 0; i < 6; i++) {
-                    content[i] = [_inputCarNo characterAtIndex:i];
+                uint8_t CMD = 0x3D;
+                TKeyValue action = kvManualCapture;
+                uint8_t content[7];
+                content[0] = action;
+                for (int i = 1; i < 7; i++) {
+                    content[i] = [_inputCarNo characterAtIndex:i-1];
                 }
-                [_socket sendRemoteThreadWithCMD:CMD Content:content len:6];
+                [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+                [alertView close];
             }
         }];
     }

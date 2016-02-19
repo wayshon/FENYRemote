@@ -9,6 +9,7 @@
 #import "SocketModel.h"
 #import "ODXSocket.h"
 
+
 static SocketModel *singInstance = nil;
 
 @interface SocketModel ()<ODXSocketDelegate>
@@ -187,16 +188,16 @@ static SocketModel *singInstance = nil;
             tip = @"未使用的状态";
             break;
     }
-    NSLog(@"status : %x",packet[n]);
+//    NSLog(@"status : %x",packet[n]);
     n += 1;
     
     BOOL hasCamera = packet[n];
-    NSLog(@"hasCamera : %x",packet[n]);
+//    NSLog(@"hasCamera : %x",packet[n]);
     n += 1;
     
     BOOL hasBg = packet[n];
     n += 1;
-    NSLog(@"hasBg : %x",hasBg);
+//    NSLog(@"hasBg : %x",hasBg);
     
     NSMutableString *heyanyuan = [NSMutableString new];
     if (hasBg && (state >= tsWaitLogIn)) {
@@ -214,9 +215,8 @@ static SocketModel *singInstance = nil;
         [heyanyuan appendString:s];
         n += 6;
     }
-    NSLog(@"heyan : %@",heyanyuan);
+//    NSLog(@"heyan : %@",heyanyuan);
     
-//    printf("jiandingyuan : ");
     NSMutableString *jiandingyuan = [NSMutableString new];
     if (hasBg && (state > tsWaitLogIn)) {
         for (int i = 0; i < 6; i++) {
@@ -233,14 +233,14 @@ static SocketModel *singInstance = nil;
         [jiandingyuan appendString:s];
         n += 6;
     }
-    NSLog(@"jiand : %@",jiandingyuan);
+//    NSLog(@"jiand : %@",jiandingyuan);
     
     NSMutableString *carNumberStr = [NSMutableString new];
     for (int i = 0; i < 6; i++) {
         [carNumberStr appendFormat:@"%c",(char)packet[n]];
         n += 1;
     }
-    NSLog(@"car : %@",carNumberStr);
+//    NSLog(@"car : %@",carNumberStr);
     
     unsigned int standard;
     uint8_t *p1 = (uint8_t *)&standard;
@@ -249,7 +249,7 @@ static SocketModel *singInstance = nil;
         n += 1;
     }
     NSString *standardString = [NSString stringWithFormat:@"%d",standard];
-    NSLog(@"standard : %@",standardString);
+//    NSLog(@"standard : %@",standardString);
     
     float speed;
     uint8_t *p2 = (uint8_t *)&speed;
@@ -258,7 +258,7 @@ static SocketModel *singInstance = nil;
         n += 1;
     }
     NSString *speedStr = [NSString stringWithFormat:@"%.2f",speed];
-    NSLog(@"speed : %@",speedStr);
+//    NSLog(@"speed : %@",speedStr);
     
     NSMutableArray *sampleArr = [NSMutableArray new];
     unsigned int temp[6];
@@ -291,11 +291,8 @@ static SocketModel *singInstance = nil;
         default:
             break;
     }
-    for (NSString *s in sampleArr) {
-        NSLog(@"sanmpleArr : %@",s);
-    }
-//    for (int i = 0; i < sampleArr.count; i++) {
-//        NSLog(@"sanmpleArr : %@",sampleArr[i]);
+//    for (NSString *s in sampleArr) {
+//        NSLog(@"sanmpleArr : %@",s);
 //    }
     
     NSMutableArray *standardsArr = [NSMutableArray new];
@@ -329,9 +326,9 @@ static SocketModel *singInstance = nil;
         default:
             break;
     }
-    for (NSString *s in standardsArr) {
-        NSLog(@"standardsArr : %@",s);
-    }
+//    for (NSString *s in standardsArr) {
+//        NSLog(@"standardsArr : %@",s);
+//    }
     
     _RemoteUpdateBlock(state,tip,hasCamera,hasBg,jiandingyuan);
     _updateBlock(state,tip,hasCamera,hasBg,heyanyuan,jiandingyuan,carNumberStr,sampleArr,standardsArr,standardString,speedStr);
@@ -400,7 +397,7 @@ static SocketModel *singInstance = nil;
 //    NSArray *xzz = [[NSArray alloc]initWithObjects:@"-1.6",@"-1.7",@"-1.8",nil];
 //    [dic setValue:xzz forKey:@"xzz"];
 //    
-//    _block(dic);
+//    _modelBlock(dic);
 //}
 
 @end

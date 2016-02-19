@@ -124,6 +124,14 @@
 #warning Incomplete implementation
         //这里发送推出命令
         //要不要加个定时器，显示登入不成功
+        uint8_t CMD = 0x3D;
+        TKeyValue myaction = kvUserExit;
+        uint8_t content[7];
+        content[0] = myaction;
+        for (int i = 1; i < 7; i++) {
+            content[i] = [_JDuserName characterAtIndex:i-1];
+        }
+        [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
         [self.navigationController popToRootViewControllerAnimated:YES];
     }];
     [alertController addAction:cancelAction];
@@ -177,6 +185,11 @@
     CGRect frame = text.frame;
     text.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 55);
     text.tv.frame = CGRectMake(0, 55, frame.size.width, 0);
+}
+
+#pragma mark -modelDelegate
+- (void)UnconnectionTips {
+    
 }
 
 - (void)didReceiveMemoryWarning {

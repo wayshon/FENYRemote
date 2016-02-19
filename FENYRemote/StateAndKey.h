@@ -9,34 +9,34 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    tsInit = 0,//程序初始化
-    tsWaitVerifyIn,//等待核验员登入
-    tsWaitLogIn,//等待检定员登入
-    tsInputCarNo,//请输入或获取车牌号
-    tsPreMotorDevice,//欲初始化，无任何指令使用
-    tsAskLogin,//请求登入，无
-    tsAskCarNumplate,//请求车牌，无
-    tsAskStartMotor,//请求启动马达，无
-    tsWaitSaveSample,//保存采样，无
-    tsInlineEditPar,//升降收缩
-    tsAskParList,//无
-    tsSaveParList,//无
-    tsWaitRunCmd,//等待启动
-    tsRunning,//正在运行
-    tsStop,//停止
-    tsPreStop,//无
-    tsEditSample,//方向键，确定键，。。。。
-    tsSendSample,
-    tsSaveSample,
-    tsAfterEditK,
-    tsAskEndChk,
-    tsSelectChkMode,
-    tsEndTest,
-    tsSetPar,
-    tSelfTest,
-    tsSysPar,
-    tsDirectDisp,//无
-    tsInputOffNo,//升降收缩
+    tsInit = 0,//程序初始化0
+    tsWaitVerifyIn,//等待核验员登入1
+    tsWaitLogIn,//等待检定员登入2
+    tsInputCarNo,//请输入或获取车牌号3
+    tsPreMotorDevice,//欲初始化，无任何指令使用4
+    tsAskLogin,//请求登入，无5
+    tsAskCarNumplate,//请求车牌，无6
+    tsAskStartMotor,//请求启动马达，无7
+    tsWaitSaveSample,//保存采样，无8
+    tsInlineEditPar,//升降收缩9
+    tsAskParList,//无10
+    tsSaveParList,//无11
+    tsWaitRunCmd,//等待启动12
+    tsRunning,//正在运行13
+    tsStop,//停止14
+    tsPreStop,//无15
+    tsEditSample,//方向键，确定键，。。。。16
+    tsSendSample,//17
+    tsSaveSample,//18
+    tsAfterEditK,//19
+    tsAskEndChk,//20
+    tsSelectChkMode,//21
+    tsEndTest,//22
+    tsSetPar,//23
+    tSelfTest,//24
+    tsSysPar,//25
+    tsDirectDisp,//无26
+    tsInputOffNo,//升降收缩27
     
 }TTestState;
 
