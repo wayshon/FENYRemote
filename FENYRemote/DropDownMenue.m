@@ -43,7 +43,7 @@
     return self;
 }
 -(void)dropdown{
-    for (int i = 2; i < 9; i++) {
+    for (int i = 2; i < 8; i++) {
         if (i == mytextField.tag) {
             continue;
         }

@@ -46,7 +46,12 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField{
-    [_deledate captureCarNumber:textField.text];
+    if (textField.text.length == 6) {
+        [_deledate captureCarNumber:textField.text];
+    }else {
+        NSLog(@"车号必需为6位");
+        
+    }
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField

@@ -59,14 +59,14 @@ static SocketModel *singInstance = nil;
 }
 
 - (void)remoteWithData:(NSData *)data {
-    Byte *packet = (Byte *)[data bytes];
-    unsigned short len = data.length;
-    TKeyValue key = packet[11];
-    if (key == kvCapture || key == kvManualCapture || key == kvQueryCar) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        Byte *packet = (Byte *)[data bytes];
+        unsigned short len = data.length;
+        if (len > 12) {
             [self remoteAnalysisWithPacket:packet Len:len];
-        });
-    }
+        }
+    });
 }
 
 - (void)backgroundWithData:(NSData *)data {
@@ -89,6 +89,54 @@ static SocketModel *singInstance = nil;
 //    
 //    int carNo = packet[n];
 //    n += 1;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    NSDictionary *dic = [[NSMutableDictionary alloc] init];
+//    NSString *chehao = @"苏B88888";
+//    [dic setValue:chehao forKey:@"chehao"];
+//    NSString *chexing = @"红旗";
+//    [dic setValue:chexing forKey:@"chexing"];
+//    NSString *jijiaqixinghao = @"JQS-3A";
+//    [dic setValue:jijiaqixinghao forKey:@"jijiaqixinghao"];
+//    NSString *jijiaqiqihao = @"1234";
+//    [dic setValue:jijiaqiqihao forKey:@"jijiaqiqihao"];
+//    NSString *jijiaqiKzhi = @"980";
+//    [dic setValue:jijiaqiKzhi forKey:@"jijiaqiKzhi"];
+//    NSString *luntaixinghao = @"185/60R14";
+//    [dic setValue:luntaixinghao forKey:@"luntaixinghao"];
+//    NSString *xiuzhengzhi = @"-1.5";
+//    [dic setValue:xiuzhengzhi forKey:@"xiuzhengzhi"];
+//    NSString *youxiaoqizhi = @"2006-10-11";
+//    [dic setValue:youxiaoqizhi forKey:@"youxiaoqizhi"];
+//    
+//    NSArray *cx = [[NSArray alloc]initWithObjects:@"红旗",@"桑塔纳",@"帕萨特",@"凯美瑞",@"阿斯顿马丁",@"布加迪威龙",nil];
+//    [dic setValue:cx forKey:@"cx"];
+//    NSArray *jjqxh = [[NSArray alloc]initWithObjects:@"JQS-3A",@"JQS-3B",@"JQS-3C",@"JQS-3D",nil];
+//    [dic setValue:jjqxh forKey:@"jjqxh"];
+//    NSArray *jjqqh = [[NSArray alloc]initWithObjects:@"1234",@"5678",@"2345",@"3456",@"6789",@"0000",nil];
+//    [dic setValue:jjqqh forKey:@"jjqqh"];
+//    NSArray *jjqkz = [[NSArray alloc]initWithObjects:@"980",@"970",@"960",@"950",@"940",@"930",nil];
+//    [dic setValue:jjqkz forKey:@"jjqkz"];
+//    NSArray *ltxh = [[NSArray alloc]initWithObjects:@"185/60R14",@"185/60R13",@"185/60R12",@"185/60R11",@"185/60R10",@"185/60R09",nil];
+//    [dic setValue:ltxh forKey:@"ltxh"];
+//    NSArray *xzz = [[NSArray alloc]initWithObjects:@"-1.6",@"-1.7",@"-1.8",nil];
+//    [dic setValue:xzz forKey:@"xzz"];
+//    
+//    _modelBlock(dic);
     
     
 }
@@ -334,30 +382,6 @@ static SocketModel *singInstance = nil;
     _updateBlock(state,tip,hasCamera,hasBg,heyanyuan,jiandingyuan,carNumberStr,sampleArr,standardsArr,standardString,speedStr);
 }
 
-//- (void)test {
-//    NSDictionary *dic = [[NSMutableDictionary alloc] init];
-//    NSString *chehao = @"苏B88888";
-//    [dic setValue:chehao forKey:@"chehao"];
-//    NSString *chexing = @"红旗";
-//    [dic setValue:chexing forKey:@"chexing"];
-//    NSString *jijiaqixinghao = @"JQS-3A";
-//    [dic setValue:jijiaqixinghao forKey:@"jijiaqixinghao"];
-//    NSString *jijiaqiqihao = @"1234";
-//    [dic setValue:jijiaqiqihao forKey:@"jijiaqiqihao"];
-//    NSString *jijiaqiKzhi = @"980";
-//    [dic setValue:jijiaqiKzhi forKey:@"jijiaqiKzhi"];
-//    NSString *luntaixinghao = @"185/60R14";
-//    [dic setValue:luntaixinghao forKey:@"luntaixinghao"];
-//    NSString *luntaiqiya = @"0.2MPa";
-//    [dic setValue:luntaiqiya forKey:@"luntaiqiya"];
-//    NSString *xiuzhengzhi = @"-1.5";
-//    [dic setValue:xiuzhengzhi forKey:@"xiuzhengzhi"];
-//    NSString *youxiaoqizhi = @"2006-10-11";
-//    [dic setValue:youxiaoqizhi forKey:@"youxiaoqizhi"];
-//    NSString *jianceriqi = @"2015-10-21";
-//    [dic setValue:jianceriqi forKey:@"jianceriqi"];
-//}
-
 //获取数据后再执行test
 //- (void)test {
 //    NSDictionary *dic = [[NSMutableDictionary alloc] init];
@@ -373,14 +397,10 @@ static SocketModel *singInstance = nil;
 //    [dic setValue:jijiaqiKzhi forKey:@"jijiaqiKzhi"];
 //    NSString *luntaixinghao = @"185/60R14";
 //    [dic setValue:luntaixinghao forKey:@"luntaixinghao"];
-//    NSString *luntaiqiya = @"0.2MPa";
-//    [dic setValue:luntaiqiya forKey:@"luntaiqiya"];
 //    NSString *xiuzhengzhi = @"-1.5";
 //    [dic setValue:xiuzhengzhi forKey:@"xiuzhengzhi"];
 //    NSString *youxiaoqizhi = @"2006-10-11";
 //    [dic setValue:youxiaoqizhi forKey:@"youxiaoqizhi"];
-//    NSString *jianceriqi = @"2015-10-21";
-//    [dic setValue:jianceriqi forKey:@"jianceriqi"];
 //    
 //    NSArray *cx = [[NSArray alloc]initWithObjects:@"红旗",@"桑塔纳",@"帕萨特",@"凯美瑞",@"阿斯顿马丁",@"布加迪威龙",nil];
 //    [dic setValue:cx forKey:@"cx"];
@@ -392,8 +412,6 @@ static SocketModel *singInstance = nil;
 //    [dic setValue:jjqkz forKey:@"jjqkz"];
 //    NSArray *ltxh = [[NSArray alloc]initWithObjects:@"185/60R14",@"185/60R13",@"185/60R12",@"185/60R11",@"185/60R10",@"185/60R09",nil];
 //    [dic setValue:ltxh forKey:@"ltxh"];
-//    NSArray *ltqy = [[NSArray alloc]initWithObjects:@"0.2MPa",@"0.3MPa",@"0.4MPa",nil];
-//    [dic setValue:ltqy forKey:@"ltqy"];
 //    NSArray *xzz = [[NSArray alloc]initWithObjects:@"-1.6",@"-1.7",@"-1.8",nil];
 //    [dic setValue:xzz forKey:@"xzz"];
 //    

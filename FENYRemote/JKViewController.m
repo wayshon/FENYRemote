@@ -8,6 +8,7 @@
 
 #import "JKViewController.h"
 #import "LNNumberpad.h"
+#import "YcKeyBoardView.h"
 #import "OBShapedButton.h"
 #import "ODXSocket.h"
 #import "SocketModel.h"
@@ -19,11 +20,13 @@
 #import "StateAndKey.h"
 
 
-@interface JKViewController ()<CustomIOSAlertViewDelegate,ContentViewDelegate,LNNumberpadDelegate,UITextFieldDelegate,modelDelegate,CaptureViewDelegate>
+@interface JKViewController ()<CustomIOSAlertViewDelegate,ContentViewDelegate,LNNumberpadDelegate,UITextFieldDelegate,modelDelegate,CaptureViewDelegate,YcKeyBoardViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *JKBottomView;
 @property (weak, nonatomic) IBOutlet UITextField *SpeedText;
 
+@property (nonatomic,strong) UISwipeGestureRecognizer *upGestureRecognizer;
+@property (nonatomic,strong) YcKeyBoardView *key;
 @property (strong, nonatomic) OBShapedButton *JKJDUser;
 @property (nonatomic) ODXSocket *socket;
 @property (nonatomic) SocketModel *model;
@@ -62,6 +65,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setGesture];
     [self CreatBtns];
     _socket = [ODXSocket sharedSocket];
     _model = [SocketModel sharedModel];
@@ -130,6 +134,63 @@
 - (void)viewWillAppear:(BOOL)animated{
     [self updateView];
     [super viewWillAppear:animated];
+}
+
+#pragma -markSetGesture
+- (void)setGesture{
+    self.upGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipes:)];
+    self.upGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.view addGestureRecognizer:self.upGestureRecognizer];
+}
+
+- (void)handleSwipes:(UISwipeGestureRecognizer *)sender
+{
+    if (_state <= tsWaitLogIn) {
+        [self alertView];
+    }else {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+        if(self.key == nil){
+            self.key = [[YcKeyBoardView alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 60, [UIScreen mainScreen].bounds.size.width, 60)];
+        }
+        self.key.delegate = self;
+        [self.key.textView becomeFirstResponder];
+        self.key.textView.textAlignment = NSTextAlignmentCenter;
+        self.key.textView.font = [UIFont systemFontOfSize:50];
+        self.key.textView.inputView = [LNNumberpad defaultLNNumberpad];
+        [LNNumberpad defaultLNNumberpad].delegate = self;
+        [self.view addSubview:self.key];
+    }
+}
+
+//上滑键盘的方法
+-(void)keyboardShow:(NSNotification *)note
+{
+    [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        
+        self.key.transform = CGAffineTransformMakeTranslation(0, -410);//origin.y - 253
+    }];
+}
+-(void)keyboardHide:(NSNotification *)note
+{
+    [UIView animateWithDuration:[note.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        //重置位置坐标
+        self.key.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished) {
+        _KeyBoardText = self.key.textView.text;
+        self.key.textView.text = @"";
+        [self.key removeFromSuperview];
+        if (_NumberPadFlag) {
+            [self sendAssignSpeed];
+        }
+    }];
+}
+
+-(void)keyBoardViewHide:(YcKeyBoardView *)keyBoardView textView:(UITextView *)contentView
+{
+    [contentView resignFirstResponder];
+    //接口请求
+    
 }
 
 #pragma mark -CreatBtns
@@ -292,6 +353,11 @@
                 content[i] = [sendStr characterAtIndex:i-1];
             }
             [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+            printf("\n登入 : ");
+            for (int j = 0; j < sizeof(content); j++) {
+                printf("%x,",content[j]);
+            }
+            printf("\n");
             [alertView close];
             [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(EnterErrorAlertView) userInfo:nil repeats:NO];
         }
@@ -344,6 +410,11 @@
                     content[i] = [_inputCarNo characterAtIndex:i-1];
                 }
                 [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+                printf("\n手动车牌 : ");
+                for (int j = 0; j < sizeof(content); j++) {
+                    printf("%x,",content[j]);
+                }
+                printf("\n");
                 [alertView close];
             }
         }];
@@ -365,6 +436,11 @@
                     content[i] = [_inputCarNo characterAtIndex:i-1];
                 }
                 [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+                printf("\n手动车牌 : ");
+                for (int j = 0; j < sizeof(content); j++) {
+                    printf("%x,",content[j]);
+                }
+                printf("\n");
                 [alertView close];
             }
         }];
@@ -390,8 +466,8 @@
 #pragma mark -ContentViewDelegate
 - (void)GetUserNameWithStr:(NSString *)userName {
     if (userName.length > 0) {
-        self.userName = [userName copy];
-        self.JKLineIP = userName;
+        self.userName = [[NSMutableString alloc] initWithString:userName];
+        self.JKLineIP = [[NSMutableString alloc] initWithString:userName];
         switch (_userName.length) {
             case 1:
                 for (int i = 0; i < 5; i++) {
@@ -425,8 +501,8 @@
 
 - (void)GetPassWordWithStr:(NSString *)passWord {
     if (passWord.length > 0) {
-        self.passWord = [passWord copy];
-        self.JKLinePort = passWord;
+        self.passWord = [[NSMutableString alloc] initWithString:passWord];
+        self.JKLinePort = [[NSMutableString alloc] initWithString:passWord];
         switch (_passWord.length) {
             case 1:
                 for (int i = 0; i < 5; i++) {
@@ -469,10 +545,43 @@
         TKeyValue myaction = kvUserExit;
         uint8_t content[7];
         content[0] = myaction;
+        switch (_userName.length) {
+            case 1:
+                for (int i = 0; i < 5; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 4; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 5:
+                [self.userName appendString:@"0"];
+                break;
+                
+            default:
+                break;
+        }
         for (int i = 1; i < 7; i++) {
             content[i] = [_userName characterAtIndex:i-1];
         }
         [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+        printf("\n退出 : ");
+        for (int j = 0; j < sizeof(content); j++) {
+            printf("%x,",content[j]);
+        }
+        printf("\n");
     }];
     [alertController addAction:cancelAction];
     [alertController addAction:okAction];
@@ -515,11 +624,12 @@
             for (int i = 1; i < 7; i++) {
                 content[i] = [_CarNumber.titleLabel.text characterAtIndex:i-1];
             }
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+            printf("\n查询详情 : ");
             for (int j = 0; j < sizeof(content); j++) {
                 printf("%x,",content[j]);
             }
             printf("\n");
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
         }
             break;
         case tsRunning:
@@ -1949,103 +2059,114 @@
 }
 
 - (void)sendAssignSpeed {
-    switch (_state) {
-        case tsInit:
-            [self tsInitAlertView];
-            break;
-        case tsWaitVerifyIn:
-            [self tsWaitVerifyInAlertView];
-            break;
-        case tsWaitLogIn:
-            [self alertView];
-            break;
-        case tsInputCarNo:
-            
-            break;
-        case tsPreMotorDevice:
-            
-            break;
-        case tsAskLogin:
-            
-            break;
-        case tsAskCarNumplate:
-            
-            break;
-        case tsAskStartMotor:
-            
-            break;
-        case tsWaitSaveSample:
-            
-            break;
-        case tsInlineEditPar:
-            
-            break;
-        case tsAskParList:
-            
-            break;
-        case tsSaveParList:
-            
-            break;
-        case tsWaitRunCmd:
-            
-            break;
-        case tsRunning:
-        {
-            uint8_t CMD = 0x3D;
-            TKeyValue action = kvAssignSpeed;
-            uint8_t content[3];
-            content[0] = action;
-            content[1] = (unsigned char)(([_KeyBoardText intValue] * 10) >> 8);
-            content[2] = (unsigned char)(([_KeyBoardText intValue] * 10) & 0xffu);
-            [_socket sendRemoteThreadWithCMD:CMD Content:content len:3];
+    if (![_KeyBoardText isEqualToString:@""]){
+        switch (_state) {
+            case tsInit:
+                [self tsInitAlertView];
+                break;
+            case tsWaitVerifyIn:
+                [self tsWaitVerifyInAlertView];
+                break;
+            case tsWaitLogIn:
+                [self alertView];
+                break;
+            case tsInputCarNo:
+                
+                break;
+            case tsPreMotorDevice:
+                
+                break;
+            case tsAskLogin:
+                
+                break;
+            case tsAskCarNumplate:
+                
+                break;
+            case tsAskStartMotor:
+                
+                break;
+            case tsWaitSaveSample:
+                
+                break;
+            case tsInlineEditPar:
+                
+                break;
+            case tsAskParList:
+                
+                break;
+            case tsSaveParList:
+                
+                break;
+            case tsWaitRunCmd:
+                
+                break;
+            case tsRunning:
+            {
+                uint8_t CMD = 0x3D;
+                TKeyValue action = kvAssignSpeed;
+                uint8_t content[3];
+                content[0] = action;
+                content[1] = (unsigned char)(([_KeyBoardText intValue] * 10) >> 8);
+                content[2] = (unsigned char)(([_KeyBoardText intValue] * 10) & 0xffu);
+                [_socket sendRemoteThreadWithCMD:CMD Content:content len:3];
+            }
+                break;
+            case tsStop:
+                
+                break;
+            case tsPreStop:
+                
+                break;
+            case tsEditSample:
+                
+                break;
+            case tsSendSample:
+                
+                break;
+            case tsSaveSample:
+                
+                break;
+            case tsAfterEditK:
+                
+                break;
+            case tsAskEndChk:
+                
+                break;
+            case tsSelectChkMode:
+            {
+                uint8_t CMD = 0x3D;
+                TKeyValue action = kvSelectChkMode;
+                uint8_t content[2];
+                content[0] = action;
+                if ([_KeyBoardText intValue] == 1 || [_KeyBoardText intValue] == 2) {
+                    content[1] = [_KeyBoardText intValue];
+                    [_socket sendRemoteThreadWithCMD:CMD Content:content len:2];
+                }
+            }
+                break;
+            case tsEndTest:
+                
+                break;
+            case tsSetPar:
+                
+                break;
+            case tSelfTest:
+                
+                break;
+            case tsSysPar:
+                
+                break;
+            case tsDirectDisp:
+                
+                break;
+            case tsInputOffNo:
+                
+                break;
+                
+            default:
+                
+                break;
         }
-            break;
-        case tsStop:
-            
-            break;
-        case tsPreStop:
-            
-            break;
-        case tsEditSample:
-            
-            break;
-        case tsSendSample:
-            
-            break;
-        case tsSaveSample:
-            
-            break;
-        case tsAfterEditK:
-            
-            break;
-        case tsAskEndChk:
-            
-            break;
-        case tsSelectChkMode:
-            
-            break;
-        case tsEndTest:
-            
-            break;
-        case tsSetPar:
-            
-            break;
-        case tSelfTest:
-            
-            break;
-        case tsSysPar:
-            
-            break;
-        case tsDirectDisp:
-            
-            break;
-        case tsInputOffNo:
-            
-            break;
-            
-        default:
-            
-            break;
     }
 }
 

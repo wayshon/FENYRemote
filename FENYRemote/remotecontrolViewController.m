@@ -1947,7 +1947,7 @@
 #pragma ContentViewDelegate
 - (void)GetUserNameWithStr:(NSString *)userName {
     if (userName.length > 0) {
-        self.userName = [userName copy];
+        self.userName = [[NSMutableString alloc] initWithString:userName];
         switch (_userName.length) {
             case 1:
                 for (int i = 0; i < 5; i++) {
@@ -1981,7 +1981,7 @@
 
 - (void)GetPassWordWithStr:(NSString *)passWord {
     if (passWord.length > 0) {
-        self.passWord = [passWord copy];
+        self.passWord = [[NSMutableString alloc] initWithString:passWord];
         switch (_passWord.length) {
             case 1:
                 for (int i = 0; i < 5; i++) {
@@ -2128,6 +2128,34 @@
         TKeyValue myaction = kvUserExit;
         uint8_t content[7];
         content[0] = myaction;
+        switch (_userName.length) {
+            case 1:
+                for (int i = 0; i < 5; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 4; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 5:
+                [self.userName appendString:@"0"];
+                break;
+                
+            default:
+                break;
+        }
         for (int i = 1; i < 7; i++) {
             content[i] = [_userName characterAtIndex:i-1];
         }
@@ -2147,7 +2175,7 @@
     }
 }
 
-#pragma Gesture
+#pragma -markSetGesture
 - (void)setGesture{
     self.upGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipes:)];
     self.upGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
@@ -2156,7 +2184,7 @@
 
 - (void)handleSwipes:(UISwipeGestureRecognizer *)sender
 {
-    if (_state == tsWaitLogIn || _state == tsInit || _state == tsWaitVerifyIn) {
+    if (_state <= tsWaitLogIn) {
         [self alertView];
     }else {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];

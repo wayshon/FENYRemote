@@ -37,7 +37,7 @@
     text1.tag = 1;
     text1.delegate = self;
     text1.returnKeyType = UIReturnKeyDone;
-    text1.font=[UIFont fontWithName:@"Times New Roman" size:30];
+    text1.font = [UIFont fontWithName:@"Times New Roman" size:30];
     text1.borderStyle = UITextBorderStyleRoundedRect;
     text1.text = _detail.chehao;
     [self.view addSubview:text1];
@@ -80,34 +80,44 @@
     DropDownMenue *text7 = [[DropDownMenue alloc] initWithFrame:CGRectMake(217, 509, 531, 55) Tag:7];
     text7.tag = 7;
     text7.delegate = self;
-    text7.mytextField.text = _detail.luntaiqiya;
-    text7.tableArray = _detail.ltqy;
+    text7.mytextField.text = _detail.xiuzhengzhi;
+    text7.tableArray = _detail.xzz;
     [self.view addSubview:text7];
     
-    DropDownMenue *text8 = [[DropDownMenue alloc] initWithFrame:CGRectMake(217, 573, 531, 55) Tag:8];
+    UITextField *text8 = [[UITextField alloc] initWithFrame:CGRectMake(217, 573, 531, 55) ];
     text8.tag = 8;
     text8.delegate = self;
-    text8.mytextField.text = _detail.xiuzhengzhi;
-    text8.tableArray = _detail.xzz;
+    text8.returnKeyType = UIReturnKeyDone;
+    text8.font=[UIFont fontWithName:@"Times New Roman" size:30];
+    text8.borderStyle = UITextBorderStyleRoundedRect;
+    text8.text = _detail.youxiaoqizhi;
     [self.view addSubview:text8];
     
-    UITextField *text9 = [[UITextField alloc] initWithFrame:CGRectMake(217, 637, 531, 55) ];
+    UITextField *text9 = [[UITextField alloc] initWithFrame:CGRectMake(217, 637, 531, 55)];
     text9.tag = 9;
     text9.delegate = self;
     text9.returnKeyType = UIReturnKeyDone;
     text9.font=[UIFont fontWithName:@"Times New Roman" size:30];
     text9.borderStyle = UITextBorderStyleRoundedRect;
-    text9.text = _detail.youxiaoqizhi;
-    [self.view addSubview:text9];
+    NSDate *date = [NSDate date];//这个是NSDate类型的日期，所要获取的年月日都放在这里；
     
-    UITextField *text10 = [[UITextField alloc] initWithFrame:CGRectMake(217, 701, 531, 55)];
-    text10.tag = 10;
-    text10.delegate = self;
-    text10.returnKeyType = UIReturnKeyDone;
-    text10.font=[UIFont fontWithName:@"Times New Roman" size:30];
-    text10.borderStyle = UITextBorderStyleRoundedRect;
-    text10.text = _detail.jianceriqi;
-    [self.view addSubview:text10];
+    NSCalendar *cal = [NSCalendar currentCalendar];
+    
+    unsigned int unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|
+    
+    NSCalendarUnitDay;//这句是说你要获取日期的元素有哪些。获取年就要写NSYearCalendarUnit，获取小时就要写NSHourCalendarUnit，中间用|隔开；
+    
+    NSDateComponents *d = [cal components:unitFlags fromDate:date];//把要从date中获取的unitFlags标示的日期元素存放在NSDateComponents类型的d里面；
+    
+    //然后就可以从d中获取具体的年月日了；
+    NSInteger year = [d year];
+    NSInteger month = [d month];
+    NSInteger day  =  [d day];
+    NSMutableString *nowDate = [NSMutableString stringWithFormat:@"%ld-",(long)year];
+    [nowDate appendFormat:@"%ld-",(long)month];
+    [nowDate appendFormat:@"%ld",(long)day];
+    text9.text = nowDate;
+    [self.view addSubview:text9];
 }
 
 - (void)CreatBtns {
@@ -153,7 +163,7 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    for (long tag = 2; tag < 9; tag ++) {
+    for (long tag = 2; tag < 8; tag ++) {
         DropDownMenue *text = (DropDownMenue *)[self.view viewWithTag:tag];
         text.tv.hidden = YES;
         text.showList = NO;

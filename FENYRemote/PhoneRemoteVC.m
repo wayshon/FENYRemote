@@ -20,8 +20,8 @@
 
 @interface PhoneRemoteVC ()<CustomIOSAlertViewDelegate,YcKeyBoardViewDelegate,LNNumberpadPhoneDelegate,modelDelegate,CaptureViewDelegate>
 
-@property (nonatomic) NSString *userName;
-@property (nonatomic) NSString *passWord;
+@property (nonatomic) NSMutableString *userName;
+@property (nonatomic) NSMutableString *passWord;
 @property (nonatomic,strong) UISwipeGestureRecognizer *upGestureRecognizer;
 @property (nonatomic,strong) YcKeyBoardView *key;
 @property (nonatomic) NSString *KeyBoardText;
@@ -1694,44 +1694,53 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+#warning Incomplete implementation
+//iphone版的alertview尺寸都还没弄
 - (void)alertViewJD {
-//    CustomIOSAlertView *alert = [[CustomIOSAlertView alloc] init];
-//    ConttentView *contentView = [[ConttentView alloc] initWithImg:@"JDenterBG"];
-//    [contentView.userName becomeFirstResponder];
-//    [alert setContainerView:contentView];
-//    contentView.delegate = self;
-//    [alert setButtonTitles:[NSMutableArray arrayWithObjects:@"返回", @"登入", nil]];
-//    [alert setDelegate:self];
-//    [alert setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
-//        [contentView.userName resignFirstResponder];
-//        [contentView.passWord resignFirstResponder];
-//        if (buttonIndex == 0) {
-//            [alertView close];
-//        }else if(buttonIndex == 1){
-//#warning Incomplete implementation
-//            //这里发送登入指令
-//            [alertView close];
-//            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC));
-//            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//                [self EnterErrorAlertView];
-//            });
-//        }
-//    }];
-//    
-//    //[alert setUseMotionEffects:YES];
-//    
-//    [alert show];
+    CustomIOSAlertView *alert = [[CustomIOSAlertView alloc] init];
+    ConttentView *contentView = [[ConttentView alloc] initWithImg:@"JDenterBG"];
+    [contentView.userName becomeFirstResponder];
+    [alert setContainerView:contentView];
+    contentView.delegate = self;
+    [alert setButtonTitles:[NSMutableArray arrayWithObjects:@"返回", @"登入", nil]];
+    [alert setDelegate:self];
+    [alert setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
+        [contentView.userName resignFirstResponder];
+        [contentView.passWord resignFirstResponder];
+        if (buttonIndex == 0) {
+            [alertView close];
+        }else if(buttonIndex == 1){
+#warning Incomplete implementation
+            //这里发送登入指令
+            uint8_t CMD = 0x3D;
+            TKeyValue action = kvUserEnter;
+            NSMutableString *sendStr = _userName;
+            [sendStr appendString:_passWord];
+            uint8_t content[13];
+            content[0] = action;
+            for (int i = 1; i < 13; i++) {
+                content[i] = [sendStr characterAtIndex:i-1];
+            }
+            [_socket sendRemoteThreadWithCMD:CMD Content:content len:7];
+            [alertView close];
+            [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(EnterErrorAlertView) userInfo:nil repeats:NO];
+        }
+    }];
+    
+    //[alert setUseMotionEffects:YES];
+    
+    [alert show];
 }
 
-//- (void)EnterErrorAlertView {
-//    if (_state == tsWaitLogIn || _state == tsInit || _state == tsWaitVerifyIn) {
-//        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"登入不成功" preferredStyle:UIAlertControllerStyleAlert];
-//        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
-//        [alertController addAction:cancelAction];
-//        [self presentViewController:alertController animated:YES completion:nil];
-//        
-//    }
-//}
+- (void)EnterErrorAlertView {
+    if (_state <= tsWaitLogIn) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示" message:@"登入不成功" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:nil];
+        [alertController addAction:cancelAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    }
+}
 
 - (void)alertViewCaptureWithCamera:(BOOL)camera {
     CustomIOSAlertView *alert = [[CustomIOSAlertView alloc] init];
@@ -1909,11 +1918,71 @@
 
 #pragma ContentViewDelegate
 - (void)GetUserNameWithStr:(NSString *)userName {
-    _userName = userName;
+    if (userName.length > 0) {
+        self.userName = [[NSMutableString alloc] initWithString:userName];
+        switch (_userName.length) {
+            case 1:
+                for (int i = 0; i < 5; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 4; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++) {
+                    [self.userName appendString:@"0"];
+                }
+                break;
+            case 5:
+                [self.userName appendString:@"0"];
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
 
 - (void)GetPassWordWithStr:(NSString *)passWord {
-    _passWord = passWord;
+    if (passWord.length > 0) {
+        self.passWord = [[NSMutableString alloc] initWithString:passWord];
+        switch (_passWord.length) {
+            case 1:
+                for (int i = 0; i < 5; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 2:
+                for (int i = 0; i < 4; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 3; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 4:
+                for (int i = 0; i < 2; i++) {
+                    [self.passWord appendString:@"0"];
+                }
+                break;
+            case 5:
+                [self.passWord appendString:@"0"];
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
 
 - (void)updateView {

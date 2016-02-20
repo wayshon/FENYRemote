@@ -16,17 +16,14 @@
 @property (nonatomic,copy) NSString *jijiaqiqihao;
 @property (nonatomic,copy) NSString *jijiaqiKzhi;
 @property (nonatomic,copy) NSString *luntaixinghao;
-@property (nonatomic,copy) NSString *luntaiqiya;
 @property (nonatomic,copy) NSString *xiuzhengzhi;
 @property (nonatomic,copy) NSString *youxiaoqizhi;
-@property (nonatomic,copy) NSString *jianceriqi;
 
 @property (nonatomic,copy) NSArray *cx;
 @property (nonatomic,copy) NSArray *jjqxh;
 @property (nonatomic,copy) NSArray *jjqqh;
 @property (nonatomic,copy) NSArray *jjqkz;
 @property (nonatomic,copy) NSArray *ltxh;
-@property (nonatomic,copy) NSArray *ltqy;
 @property (nonatomic,copy) NSArray *xzz;
 
 @end

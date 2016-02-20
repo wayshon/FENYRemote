@@ -68,6 +68,7 @@ typedef enum {
     kvQueryCar,     /*查询车辆信息*/
     kvUserEnter,     /*用户登入*/
     kvUserExit,     /*用户退出*/
+    kvSelectChkMode, /*选择常检或复检*/
     
 }TKeyValue;
 
