@@ -11,10 +11,13 @@
 @interface DetailModel : NSObject
 
 @property (nonatomic,copy) NSString *chehao;
+@property (nonatomic,strong) NSNumber *chexingxuhao;
 @property (nonatomic,copy) NSString *chexing;
+@property (nonatomic,strong) NSNumber *jijiaqixuhao;
 @property (nonatomic,copy) NSString *jijiaqixinghao;
 @property (nonatomic,copy) NSString *jijiaqiqihao;
 @property (nonatomic,copy) NSString *jijiaqiKzhi;
+@property (nonatomic,strong) NSNumber *luntaixuhao;
 @property (nonatomic,copy) NSString *luntaixinghao;
 @property (nonatomic,copy) NSString *xiuzhengzhi;
 @property (nonatomic,copy) NSString *youxiaoqizhi;

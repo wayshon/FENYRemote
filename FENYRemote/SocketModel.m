@@ -79,66 +79,100 @@ static SocketModel *singInstance = nil;
 
 - (void)remoteAnalysisWithPacket:(uint8_t *)packet Len:(unsigned short)len {
     
-//    int n = 12;
-//    
-//    NSMutableString *carNumberStr = [NSMutableString new];
-//    for (int i = 0; i < 6; i++) {
-//        [carNumberStr appendFormat:@"%c",(char)packet[n]];
-//        n += 1;
-//    }
-//    
-//    int carNo = packet[n];
-//    n += 1;
+    NSDictionary *dic = [[NSMutableDictionary alloc] init];
     
+    int n = 12;
     
+    NSMutableString *chehao = [NSMutableString new];
+    for (int i = 0; i < 6; i++) {
+        [chehao appendFormat:@"%c",(char)packet[n]];
+        n += 1;
+    }
+    [dic setValue:chehao forKey:@"chehao"];
     
+    int CheXingXuHao = packet[n];
+    n += 1;
+    NSNumber *chexingxuhao = [NSNumber numberWithInt:CheXingXuHao];
+    [dic setValue:chexingxuhao forKey:@"chexingxuhao"];
     
+    int DynArray1 = packet[n];
+    n += 1;
+    NSMutableString *CheXingXianShiXinXi = [NSMutableString new];
+    for (int i = 0; i < DynArray1 - 1; i++) {
+        [CheXingXianShiXinXi appendFormat:@"%c",(char)packet[n]];
+        n += 1;
+    }
+    [dic setValue:CheXingXianShiXinXi forKey:@"chexing"];
     
+    unsigned int KZhi;
+    uint8_t *p1 = (uint8_t *)&KZhi;
+    for (int i = 0; i < 2; i++) {
+        p1[1-i] = packet[n];
+        n += 1;
+    }
+    NSString *jijiaqiKzhi = [NSString stringWithFormat:@"%d",KZhi];
+    [dic setValue:jijiaqiKzhi forKey:@"jijiaqiKzhi"];
     
+    unsigned int JiJiaQiXuHao = packet[n];
+    n += 1;
+    NSNumber *jijiaqixuhao = [NSNumber numberWithInt:JiJiaQiXuHao];
+    [dic setValue:jijiaqixuhao forKey:@"jijiaqixuhao"];
     
+    int DynArray2 = packet[n];
+    n += 1;
+    NSMutableString *JiJiaQiXianShi = [NSMutableString new];
+    for (int i = 0; i < DynArray2 - 1; i++) {
+        [JiJiaQiXianShi appendFormat:@"%c",(char)packet[n]];
+        n += 1;
+    }
+    [dic setValue:JiJiaQiXianShi forKey:@"jijiaqixinghao"];
     
+    int DynArray3 = packet[n];
+    n += 1;
+    NSMutableString *jijiaqiqihao = [NSMutableString new];
+    for (int i = 0; i < DynArray3 - 1; i++) {
+        [jijiaqiqihao appendFormat:@"%c",(char)packet[n]];
+        n += 1;
+    }
+    [dic setValue:jijiaqiqihao forKey:@"jijiaqiqihao"];
     
+    unsigned int LunTaiXuHao = packet[n];
+    n += 1;
+    NSNumber *luntaixuhao = [NSNumber numberWithInt:LunTaiXuHao];
+    [dic setValue:luntaixuhao forKey:@"luntaixuhao"];
     
+    int DynArray4 = packet[n];
+    n += 1;
+    NSMutableString *LunTaiXianShi = [NSMutableString new];
+    for (int i = 0; i < DynArray4 - 1; i++) {
+        [LunTaiXianShi appendFormat:@"%c",(char)packet[n]];
+        n += 1;
+    }
+    [dic setValue:LunTaiXianShi forKey:@"luntaixinghao"];
     
+    float LunTaiXiuZheng;
+    uint8_t *p2 = (uint8_t *)&LunTaiXiuZheng;
+    for (int i = 0; i < 4; i++) {
+        p2[3-i] = packet[n];
+        n += 1;
+    }
+    NSString *xiuzhengzhi = [NSString stringWithFormat:@"%f",LunTaiXiuZheng];
+    [dic setValue:xiuzhengzhi forKey:@"xiuzhengzhi"];
     
+    int year;
+    uint8_t *p3 = (uint8_t *)&year;
+    for (int i = 0; i < 2; i++) {
+        p3[1-i] = packet[n];
+        n += 1;
+    }
+    int month = packet[n];
+    n += 1;
+    int day = packet[n];
+    n += 1;
+    NSString *youxiaoqizhi = [NSString stringWithFormat:@"%d-%d-%d",year,month,day];
+    [dic setValue:youxiaoqizhi forKey:@"youxiaoqizhi"];
     
-    
-    
-    
-//    NSDictionary *dic = [[NSMutableDictionary alloc] init];
-//    NSString *chehao = @"苏B88888";
-//    [dic setValue:chehao forKey:@"chehao"];
-//    NSString *chexing = @"红旗";
-//    [dic setValue:chexing forKey:@"chexing"];
-//    NSString *jijiaqixinghao = @"JQS-3A";
-//    [dic setValue:jijiaqixinghao forKey:@"jijiaqixinghao"];
-//    NSString *jijiaqiqihao = @"1234";
-//    [dic setValue:jijiaqiqihao forKey:@"jijiaqiqihao"];
-//    NSString *jijiaqiKzhi = @"980";
-//    [dic setValue:jijiaqiKzhi forKey:@"jijiaqiKzhi"];
-//    NSString *luntaixinghao = @"185/60R14";
-//    [dic setValue:luntaixinghao forKey:@"luntaixinghao"];
-//    NSString *xiuzhengzhi = @"-1.5";
-//    [dic setValue:xiuzhengzhi forKey:@"xiuzhengzhi"];
-//    NSString *youxiaoqizhi = @"2006-10-11";
-//    [dic setValue:youxiaoqizhi forKey:@"youxiaoqizhi"];
-//    
-//    NSArray *cx = [[NSArray alloc]initWithObjects:@"红旗",@"桑塔纳",@"帕萨特",@"凯美瑞",@"阿斯顿马丁",@"布加迪威龙",nil];
-//    [dic setValue:cx forKey:@"cx"];
-//    NSArray *jjqxh = [[NSArray alloc]initWithObjects:@"JQS-3A",@"JQS-3B",@"JQS-3C",@"JQS-3D",nil];
-//    [dic setValue:jjqxh forKey:@"jjqxh"];
-//    NSArray *jjqqh = [[NSArray alloc]initWithObjects:@"1234",@"5678",@"2345",@"3456",@"6789",@"0000",nil];
-//    [dic setValue:jjqqh forKey:@"jjqqh"];
-//    NSArray *jjqkz = [[NSArray alloc]initWithObjects:@"980",@"970",@"960",@"950",@"940",@"930",nil];
-//    [dic setValue:jjqkz forKey:@"jjqkz"];
-//    NSArray *ltxh = [[NSArray alloc]initWithObjects:@"185/60R14",@"185/60R13",@"185/60R12",@"185/60R11",@"185/60R10",@"185/60R09",nil];
-//    [dic setValue:ltxh forKey:@"ltxh"];
-//    NSArray *xzz = [[NSArray alloc]initWithObjects:@"-1.6",@"-1.7",@"-1.8",nil];
-//    [dic setValue:xzz forKey:@"xzz"];
-//    
-//    _modelBlock(dic);
-    
-    
+    _modelBlock(dic);
 }
 
 - (void)backgroundAnalysisWithPacket:(uint8_t *)packet Len:(unsigned short)len {
